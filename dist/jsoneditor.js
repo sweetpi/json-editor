@@ -3757,7 +3757,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
       });
       
       if(controls_holder) {
-        controls_holder.appendChild(self.rows[i].delete_button);
+        self.theme.appendButtonToButtonHolder(controls_holder, self.rows[i].delete_button);
       }
     }
     
@@ -3783,7 +3783,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
       });
       
       if(controls_holder) {
-        controls_holder.appendChild(self.rows[i].moveup_button);
+        self.theme.appendButtonToButtonHolder(controls_holder, self.rows[i].moveup_button);
       }
     }
     
@@ -3808,7 +3808,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
       });
       
       if(controls_holder) {
-        controls_holder.appendChild(self.rows[i].movedown_button);
+        self.theme.appendButtonToButtonHolder(controls_holder, self.rows[i].movedown_button);
       }
     }
 
@@ -3874,7 +3874,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
       else self.jsoneditor.onChange();
       self.jsoneditor.notifyWatchers(self.path);
     });
-    self.controls.appendChild(this.add_row_button);
+    self.theme.appendButtonToButtonHolder(self.controls, this.add_row_button);
 
     this.delete_last_row_button = this.getButton('Last '+this.getItemTitle(),'delete','Delete Last '+this.getItemTitle());
     this.delete_last_row_button.addEventListener('click',function() {
@@ -3892,7 +3892,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
       if(self.parent) self.parent.onChildEditorChange(self);
       else self.jsoneditor.onChange();
     });
-    self.controls.appendChild(this.delete_last_row_button);
+    self.theme.appendButtonToButtonHolder(self.controls, this.delete_last_row_button);
 
     this.remove_all_rows_button = this.getButton('All','delete','Delete All');
     this.remove_all_rows_button.addEventListener('click',function() {
@@ -3900,7 +3900,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
       if(self.parent) self.parent.onChildEditorChange(self);
       else self.jsoneditor.onChange();
     });
-    self.controls.appendChild(this.remove_all_rows_button);
+    self.theme.appendButtonToButtonHolder(self.controls, this.remove_all_rows_button);
 
     if(self.tabs) {
       this.add_row_button.style.width = '100%';
@@ -5495,6 +5495,9 @@ JSONEditor.AbstractTheme = Class.extend({
   getButtonHolder: function() {
     return document.createElement('div');
   },
+  appendButtonToButtonHolder: function(holder, button) {
+    holder.appendChild(button);
+  },
   getButton: function(text, icon, title) {
     var el = document.createElement('button');
     this.setButtonText(el,text,icon,title);
@@ -6198,6 +6201,183 @@ JSONEditor.defaults.themes.html = JSONEditor.AbstractTheme.extend({
   removeInputError: function(input) {
     input.style.borderColor = '';
     if(input.errmsg) input.errmsg.style.display = 'none';
+  }
+});
+
+JSONEditor.defaults.themes.jquerymobile = JSONEditor.AbstractTheme.extend({
+  getTable: function() {
+    var el = this._super();
+    el.setAttribute('cellpadding',5);
+    el.setAttribute('cellspacing',0);
+    return el;
+  },
+  getTableHeaderCell: function(text) {
+    var el = this._super(text);
+    el.className = 'ui-state-active';
+    el.style.fontWeight = 'bold';
+    return el;
+  },
+  getTableCell: function() {
+    var el = this._super();
+    el.className = 'ui-widget-content';
+    return el;
+  },
+  getHeaderButtonHolder: function() {
+    var el = this.getButtonHolder();
+    el.style.marginLeft = '10px';
+    el.style.fontSize = '.6em';
+    el.style.display = 'inline-block';
+    return el;
+  },
+  getFormControl: function(label, input, description) {
+    var el = document.createElement('div');
+    el.className = 'ui-field-contain';
+    if(label) el.appendChild(label);
+    if(input.type === 'checkbox') {
+      label.insertBefore(input,label.firstChild);
+    }
+    else {
+      el.appendChild(input);
+    }
+    
+    if(description) el.appendChild(description);
+    return el;
+  },
+  getDescription: function(text) {
+    var el = document.createElement('legend');
+    el.style.fontSize = '.8em';
+    el.style.fontStyle = 'italic';
+    el.style.paddingTop = '10px';
+    el.textContent = text;
+    return el;
+  },
+  getButtonHolder: function() {
+    var el = document.createElement('div');
+    el.className = 'ui-controlgroup ui-controlgroup-horizontal ui-mini ui-corner-all';
+    var inner = document.createElement('div');
+    inner.className = 'ui-controlgroup-controls';
+    el.appendChild(inner);
+    return el;
+  },
+  appendButtonToButtonHolder: function(holder, button) {
+    holder.firstChild.appendChild(button);
+    //jQuery(holder).controlgroup({ mini: true });
+  },
+  getFormInputLabel: function(text) {
+    var el = document.createElement('label');
+    el.textContent = text;
+    return el;
+  },
+  getButton: function(text, icon, title) {
+    var button = document.createElement("button");
+    button.className = 'ui-btn ui-btn-inline ';
+
+    // Icon only
+    if(icon && !text) {
+      button.className += ' ui-btn-icon-notext ui-corner-all';
+      //icon.className += ' ui-button-icon-primary ui-icon-primary';
+      //button.appendChild(icon);
+    }
+    // Icon and Text
+    else if(icon) {
+      button.className += ' ui-btn-icon-left';
+      //icon.className += ' ui-button-icon-primary ui-icon-primary';
+      //button.appendChild(icon);
+    }
+    // Text only
+    else {
+      /*nop*/
+    }
+
+    button.textContent = text||title||".";
+    button.setAttribute('title',title);
+    
+    return button;
+  },
+  setButtonText: function(button,text, icon, title) {
+    button.innerHTML = '';
+    button.className = 'ui-btn ui-btn-inline ';
+
+    // Icon only
+    if(icon && !text) {
+      button.className += ' ui-btn-icon-notext ui-corner-all';
+      //icon.className += ' ui-button-icon-primary ui-icon-primary';
+      //button.appendChild(icon);
+    }
+    // Icon and Text
+    else if(icon) {
+      button.className += ' ui-btn-icon-left';
+      //icon.className += ' ui-button-icon-primary ui-icon-primary';
+      //button.appendChild(icon);
+    }
+    // Text only
+    else {
+      /*nop*/
+    }
+
+    button.textContent = text||title||".";
+    button.setAttribute('title',title);
+  },
+  getHeader: function(text) {
+    var el = document.createElement('h3');
+    el.className = 'ui-bar ui-bar-a ui-corner-all';
+    if(typeof text === "string") {
+      el.textContent = text;
+    }
+    else {
+      el.appendChild(text);
+    }
+    
+    return el;
+  },
+  getIndentedPanel: function() {
+    var el = document.createElement('div');
+    el.className = 'ui-body ui-body-a ui-corner-all';
+    //el.style.padding = '1em 1.4em';
+    return el;
+  },
+  afterInputReady: function(input) {
+    controlgroup = this.closest(input,'.ui-controlgroup-controls');
+    console.log(controlgroup, input);
+    switch(input.type) {
+      case 'select-one':
+        try {
+          jQuery(input).selectmenu({ inline: true });
+        } catch(e) {
+          console.log("aaaaaaaaaaaa", e);
+        }
+        break;
+      case 'text':
+        try {
+          jQuery(input).textinput();
+        } catch(e) {
+          console.log("aaaaaaaaaaaa", e);
+        }
+        break;
+    }
+  },
+  addInputError: function(input,text) {
+    if(!input.controls) return;
+    if(!input.errmsg) {
+      input.errmsg = document.createElement('div');
+      input.errmsg.className = 'ui-state-error';
+      input.controls.appendChild(input.errmsg);
+    }
+    else {
+      input.errmsg.style.display = '';
+    }
+
+    input.errmsg.textContent = text;
+  },
+  removeInputError: function(input) {
+    if(!input.errmsg) return;
+    input.errmsg.style.display = 'none';
+  },
+  markTabActive: function(tab) {
+    tab.className = tab.className.replace(/\s*ui-widget-header/g,'')+' ui-state-active';
+  },
+  markTabInactive: function(tab) {
+    tab.className = tab.className.replace(/\s*ui-state-active/g,'')+' ui-widget-header';
   }
 });
 

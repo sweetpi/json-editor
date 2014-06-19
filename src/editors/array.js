@@ -514,7 +514,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
       });
       
       if(controls_holder) {
-        controls_holder.appendChild(self.rows[i].delete_button);
+        self.theme.appendButtonToButtonHolder(controls_holder, self.rows[i].delete_button);
       }
     }
     
@@ -540,7 +540,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
       });
       
       if(controls_holder) {
-        controls_holder.appendChild(self.rows[i].moveup_button);
+        self.theme.appendButtonToButtonHolder(controls_holder, self.rows[i].moveup_button);
       }
     }
     
@@ -565,7 +565,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
       });
       
       if(controls_holder) {
-        controls_holder.appendChild(self.rows[i].movedown_button);
+        self.theme.appendButtonToButtonHolder(controls_holder, self.rows[i].movedown_button);
       }
     }
 
@@ -631,7 +631,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
       else self.jsoneditor.onChange();
       self.jsoneditor.notifyWatchers(self.path);
     });
-    self.controls.appendChild(this.add_row_button);
+    self.theme.appendButtonToButtonHolder(self.controls, this.add_row_button);
 
     this.delete_last_row_button = this.getButton('Last '+this.getItemTitle(),'delete','Delete Last '+this.getItemTitle());
     this.delete_last_row_button.addEventListener('click',function() {
@@ -649,7 +649,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
       if(self.parent) self.parent.onChildEditorChange(self);
       else self.jsoneditor.onChange();
     });
-    self.controls.appendChild(this.delete_last_row_button);
+    self.theme.appendButtonToButtonHolder(self.controls, this.delete_last_row_button);
 
     this.remove_all_rows_button = this.getButton('All','delete','Delete All');
     this.remove_all_rows_button.addEventListener('click',function() {
@@ -657,7 +657,7 @@ JSONEditor.defaults.editors.array = JSONEditor.AbstractEditor.extend({
       if(self.parent) self.parent.onChildEditorChange(self);
       else self.jsoneditor.onChange();
     });
-    self.controls.appendChild(this.remove_all_rows_button);
+    self.theme.appendButtonToButtonHolder(self.controls, this.remove_all_rows_button);
 
     if(self.tabs) {
       this.add_row_button.style.width = '100%';

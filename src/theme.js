@@ -194,6 +194,9 @@ JSONEditor.AbstractTheme = Class.extend({
   getButtonHolder: function() {
     return document.createElement('div');
   },
+  appendButtonToButtonHolder: function(holder, button) {
+    holder.appendChild(button);
+  },
   getButton: function(text, icon, title) {
     var el = document.createElement('button');
     this.setButtonText(el,text,icon,title);
